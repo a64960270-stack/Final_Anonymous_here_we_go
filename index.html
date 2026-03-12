@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<title>Anonymous Voting</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6f8;
+padding:40px;
+text-align:center;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:12px;
+box-shadow:0 5px 25px rgba(0,0,0,0.1);
+}
+
+h1{
+color:#0b7d3b;
+margin-bottom:10px;
+}
+
+.candidates{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+margin-top:20px;
+}
+
+.card{
+
+border:2px solid #eee;
+border-radius:10px;
+padding:15px;
+cursor:pointer;
+transition:0.2s;
+background:#fafafa;
+
+}
+
+.card:hover{
+border-color:#0b7d3b;
+transform:scale(1.03);
+}
+
+.card img{
+
+width:100%;
+height:180px;
+object-fit:cover;
+border-radius:8px;
+
+}
+
+.name{
+
+margin-top:10px;
+font-weight:bold;
+font-size:15px;
+
+}
+
+input[type="radio"]{
+
+margin-top:10px;
+
+}
+
+select{
+
+padding:10px;
+margin-top:10px;
+width:60%;
+border-radius:6px;
+border:1px solid #ccc;
+
+}
+
+button{
+
+padding:12px 25px;
+border:none;
+background:#0b7d3b;
+color:white;
+font-size:16px;
+border-radius:6px;
+margin-top:25px;
+cursor:pointer;
+
+}
+
+button:hover{
+background:#095f2c;
+}
+
+.phone{
+margin-top:20px;
+font-size:14px;
+}
+
+.message{
+margin-top:20px;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>School of Public Health (SoPH)</h1>
+
+<p>Select your preferred candidate</p>
+
+<form id="voteForm">
+
+<div class="candidates">
+
+<label class="card">
+
+<img src="umar.jpg">
+<div class="name">1. Umar Mariam Boresa</div>
+<input type="radio" name="candidate" value="Umar Mariam Boresa" required>
+
+</label>
+
+
+<label class="card">
+
+<img src="samsudeen.jpg">
+<div class="name">2. Samsudeen Apiiga Yakubu</div>
+<input type="radio" name="candidate" value="Samsudeen Apiiga Yakubu">
+
+</label>
+
+
+<label class="card">
+
+<img src="seidu.jpg">
+<div class="name">3. Seidu Salim Solomon</div>
+<input type="radio" name="candidate" value="Seidu Salim Solomon">
+
+</label>
+
+
+<label class="card">
+
+<img src="dominic.jpg">
+<div class="name">4. Dominic Opoku Boakye</div>
+<input type="radio" name="candidate" value="Dominic Opoku Boakye">
+
+</label>
+
+
+<label class="card">
+
+<img src="kennedy.jpg">
+<div class="name">5. J.M. Kennedy</div>
+<input type="radio" name="candidate" value="J.M. Kennedy">
+
+</label>
+
+
+<label class="card">
+
+<img src="abdul.jpg">
+<div class="name">6. Abdul-Nasiru Wumbei Muniru</div>
+<input type="radio" name="candidate" value="Abdul-Nasiru Wumbei Muniru">
+
+</label>
+
+
+<label class="card">
+
+<img src="iddrisu.jpg">
+<div class="name">7. Iddrisu Fuseini Alhassan</div>
+<input type="radio" name="candidate" value="Iddrisu Fuseini Alhassan">
+
+</label>
+
+</div>
+
+<br>
+
+<p><b>Will you come out willingly to vote?</b></p>
+
+<select name="willing" required>
+
+<option value="">Select</option>
+<option value="Yes">Yes, I will come willingly</option>
+<option value="Maybe">Maybe</option>
+<option value="No">No</option>
+
+</select>
+
+<br><br>
+
+<p>Do you need help coming to vote?</p>
+
+<select name="help">
+
+<option value="No">No</option>
+<option value="Yes">Yes</option>
+
+</select>
+
+<br>
+
+<button type="submit">Submit Response</button>
+
+</form>
+
+<div id="msg" class="message"></div>
+
+<p class="phone">
+If you need help getting to vote call or WhatsApp  
+<b>+233 20 578 1162</b>
+</p>
+
+</div>
+
+<script>
+
+const scriptURL="YOUR_SCRIPT_URL";
+
+function getDeviceID(){
+
+let id=localStorage.getItem("deviceID");
+
+if(!id){
+
+id="device-"+Math.random().toString(36).substr(2,9);
+
+localStorage.setItem("deviceID",id);
+
+}
+
+return id;
+
+}
+
+if(localStorage.getItem("voted")=="true"){
+
+document.getElementById("voteForm").style.display="none";
+
+document.getElementById("msg").innerHTML="You have already submitted your vote.";
+
+}
+
+document.getElementById("voteForm").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+if(localStorage.getItem("voted")=="true"){return;}
+
+const formData=new FormData(this);
+
+formData.append("device",getDeviceID());
+
+fetch(scriptURL,{
+method:"POST",
+body:formData
+})
+.then(res=>res.text())
+.then(data=>{
+
+localStorage.setItem("voted","true");
+
+document.getElementById("voteForm").style.display="none";
+
+document.getElementById("msg").innerHTML="Thank you. Your response has been recorded.";
+
+});
+
+});
+
+</script>
+
+</body>
+</html>
